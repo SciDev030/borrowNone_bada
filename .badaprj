@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<bada>
+    <type>6</type>
+    <sdk>F:\bada\2.0.6</sdk>
+    <model>WaveHVGA</model>
+    <apiversioncheck>true</apiversioncheck>
+    <priviligecheck>true</priviligecheck>
+    <properties/>
+</bada>

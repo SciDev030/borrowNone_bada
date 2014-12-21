@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="target-densitydpi=high-dpi, user-scalable=no" />
+		<title>BorrowNone [bada]</title>
+		<link href="osp://webapp/css/style.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="osp://webapp/js/webapp_core.js"> </script>
+		<script type="text/javascript" src="osp://webapp/js/webapp_ui.js"> </script>
+		<script type="text/javascript" src="./js/libs/date.js"> </script>
+		<script type="text/javascript" src="./js/borrowNone.api.js"> </script>
+		<script type="text/javascript" src="./js/borrowNone.db.js"> </script>
+		<script type="text/javascript" src="./js/borrowNone.events.js"> </script>
+		<script type="text/javascript" src="./js/borrowNone.style.js"> </script>
+		<script type="text/javascript" src="./js/borrowNone.ui.js"> </script>
+		<script type="text/javascript" src="./js/borrowNone.util.js"> </script>
+		<script type="text/javascript" src="./js/borrowNone.js"> </script>
+		<script>
+		Osp.App.Application.addEventListener("initializing", function()
+		{
+			Osp.Ui.init();
+			appObj = new borrowNone();
+			appObj.launch();
+		}, this);
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

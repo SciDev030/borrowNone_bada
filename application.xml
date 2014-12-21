@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Application>
+    <Entry>BorrowNone</Entry>
+    <Name>
+        <English>BorrowNone</English>
+        <eng-GB>BorrowNone</eng-GB>
+        <deu-DE>VerleihNix</deu-DE>
+    </Name>
+    <Vendor>SciDev</Vendor>
+    <Description/>
+    <Icons>
+        <MainMenu>icon_wvga.png<Type1/>
+            <Type2/>
+            <Type3>icon_hvga.png</Type3>
+            <Type4>icon_wvga.png</Type4>
+            <Type5/>
+        </MainMenu>
+        <Setting/>
+        <Ticker/>
+        <QuickPanel/>
+        <LaunchImage>splash_wvga.png<Type1/>
+            <Type2/>
+            <Type3>splash_hvga.png</Type3>
+            <Type4>splash_wvga.png</Type4>
+            <Type5/>
+        </LaunchImage>
+    </Icons>
+    <AutoScaling>
+        <Enabled>false</Enabled>
+    </AutoScaling>
+    <Multitasking>true</Multitasking>
+</Application>
