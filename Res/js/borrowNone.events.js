@@ -8,6 +8,12 @@ Osp.Core.Mixin.define("borrowNone.Events",
 			CURRENT: null
 		},
 
+		CURRENT:
+		{
+			ITEM: null,
+			ID: null
+		},
+
 		CHECKBUTTON:
 		{
 			STATE: null
@@ -146,11 +152,11 @@ Osp.Core.Mixin.define("borrowNone.Events",
 
 				// DELETELIST
 				case 2:
-					this.hideAllPages();
-
 					// borrowPanel
 					if(this.borrowList.isVisible() && this.borrowList.getItemCount() > 0)
 					{
+						this.hideAllPages();
+
 						this.borrowList.removeListenerById(this.LISTENER.LIST.BORROW);
 
 						this.updateList(this.borrowList, 'mark');
@@ -164,6 +170,8 @@ Osp.Core.Mixin.define("borrowNone.Events",
 					// loanPanel
 					if(this.loanList.isVisible() && this.loanList.getItemCount() > 0)
 					{
+						this.hideAllPages();
+
 						this.loanList.removeListenerById(this.LISTENER.LIST.LOAN);
 
 						this.updateList(this.loanList, 'mark');
@@ -190,7 +198,7 @@ Osp.Core.Mixin.define("borrowNone.Events",
 						requiredFields = [titleField, personField, startDateField],
 						exportToggle = this.exportToggle;
 
-					if(this.CheckFields(requiredFields, startDateField, endDateField))
+					if(this.CheckFields(requiredFields, startDateField, startDateField))
 					{
 						// vars
 						var title = titleField.getText(),
@@ -202,7 +210,6 @@ Osp.Core.Mixin.define("borrowNone.Events",
 							pic = picURLField.getText(),
 							time = 0,
 							modus = 1,
-							exportData = null,
 							bufferItem = {
 								"title": title,
 								"type": type,
@@ -233,12 +240,15 @@ Osp.Core.Mixin.define("borrowNone.Events",
 								modus = 2;
 							}
 
-							exportData = {
-								"time": time,
-								"modus": modus
-							};
+							if(time && modus)
+							{
+								bufferItem.exportData = {
+									"time": time,
+									"modus": modus
+								};
+							}
 
-							this.export2Calendar(bufferItem, exportData);
+							this.export2Calendar(bufferItem);
 						}
 						else // without calendar export
 						{
@@ -367,7 +377,9 @@ Osp.Core.Mixin.define("borrowNone.Events",
 
 				// EDIT
 				case 6:
-					var allowExport = localStorage.getItem('allowExport');
+					var allowExport = localStorage.getItem('allowExport'),
+						item = this.CURRENT.ITEM,
+						id = this.CURRENT.ID;
 
 					// change PAGE.CURRENT to 'editPage'
 					this.PAGE.CURRENT = 'editPage';
@@ -378,15 +390,65 @@ Osp.Core.Mixin.define("borrowNone.Events",
 					// MODIFY FOOTER
 					this.SaveCancelButtons(8);
 
-					var title = this.detailTitleLabelValue.getText(),
-						person = this.detailPersonLabelValue.getText(),
-						date = this.detailStartDateLabelValue.getText(),
-						enddate = this.detailEndDateLabelValue.getText(),
-						type = this.detailTypeLabelValue.getText(),
-						note = this.detailNoteLabelValue.getText(),
-						pic = this.detailPicLabelValue.getText(),
-						id = this.detailIdLabelValue.getText(),
-						box = type === ('loan') ? this.editLoanCheckbutton : this.editBorrowCheckbutton;
+					var title = item.title,
+						person = item.person,
+						date = item.date,
+						endDate = item.endDate,
+						type = isNaN(item.type) ? item.type : parseInt(item.type, 10),
+						note = item.note,
+						pic = item.pic,
+						alarmTime = "",
+						alarmMode = null,
+						box = (type === 'loan' || type ===  2) ? this.editLoanCheckbutton : this.editBorrowCheckbutton;
+
+					if(Osp.Core.Check.isPositiveNumber(date))
+					{
+						date = new Date(date).toLocaleDateString();
+					}
+					else
+					{
+						date = new Date(Date.parse(date)).toLocaleDateString();
+					}
+
+					if(endDate)
+					{
+						if(Osp.Core.Check.isPositiveNumber(endDate))
+						{
+							endDate = new Date(endDate).toLocaleDateString();
+						}
+						else
+						{
+							endDate = new Date(Date.parse(endDate)).toLocaleDateString();
+						}
+					}
+
+					// fill edit fields
+					this.editRadioGroupObj.setSelectedItem(box);
+					this.editTitleField.setText(title);
+					this.editPersonField.setText(person);
+					this.editStartDateField.setText(date);
+					this.editEndDateField.setText(endDate);
+					this.editNoteArea.setText(note);
+
+					if(item.exportData)
+					{
+						this.editTimeValueField.setText(item.exportData.time+'');
+
+						if(item.exportData.modus === 0)
+						{
+							this.typeMode1CheckButton.setSelected(true);
+						}
+
+						if(item.exportData.modus === 1)
+						{
+							this.typeMode2CheckButton.setSelected(true);
+						}
+
+						if(item.exportData.modus === 3)
+						{
+							this.typeMode3CheckButton.setSelected(true);
+						}
+					}
 
 					this.ID.DATE  = this.editStartDateField;
 					this.ID.ENDDATE  = this.editEndDateField;
@@ -395,14 +457,6 @@ Osp.Core.Mixin.define("borrowNone.Events",
 					this.ID.EXPORTMODE_0 = this.editTypeMode1CheckButton;
 					this.ID.EXPORTMODE_1 = this.editTypeMode2CheckButton;
 					this.ID.EXPORTMODE_2 = this.editTypeMode3CheckButton;
-
-					// fill edit fields
-					this.editRadioGroupObj.setSelectedItem(box);
-					this.editTitleField.setText(title);
-					this.editPersonField.setText(person);
-					this.editStartDateField.setText(date);
-					this.editEndDateField.setText(enddate);
-					this.editNoteArea.setText(note);
 
 					if(allowExport)
 					{
@@ -490,8 +544,7 @@ Osp.Core.Mixin.define("borrowNone.Events",
 								"pic": pic,
 								"note": note,
 								"eventId": eventId
-							},
-							exportData = null;
+							};
 
 						if(exportToggle.isSelected())
 						{
@@ -512,18 +565,18 @@ Osp.Core.Mixin.define("borrowNone.Events",
 								modus = 2;
 							}
 
-							exportData = {
+							bufferItem.exportData = {
 								"time": time,
 								"modus": modus
 							};
 
-							if(!eventId)
+							if(!eventId || eventId === -1)
 							{
-								this.export2Calendar(bufferItem, exportData, index);
+								this.export2Calendar(bufferItem, index);
 							}
 							else
 							{
-								this.updateEvent(bufferItem, exportData, index);
+								this.updateEvent(bufferItem, index);
 							}
 						}
 						else // without calendar export
@@ -753,13 +806,13 @@ Osp.Core.Mixin.define("borrowNone.Events",
 			var list = e.getData().source; // get list
 				item = list.getItemAt(e.getData().index); // get listIndex
 
+			// FROMLIST/TOLIST
 			if(this.loanList.isVisible() || this.borrowList.isVisible())
 			{
 				this.PAGE.PREVIOUS = this.borrowList.isVisible() ? 'borrowList' : 'loanList';
 
-				var index = item.setting.descriptionText, // get arrayIndex
-					db = localStorage.getItem('db'), // query db
-					data  = JSON.parse(db).results, // query results
+				var index = parseInt(item.setting.descriptionText, 10), // get arrayIndex
+					data  = JSON.parse(localStorage.getItem('db')).results, // query results
 					itemData = data[index], // query one specific item
 					eventId = (itemData.eventId && itemData.eventId !== -1) ? itemData.eventId : "",
 					date = itemData.date,
@@ -778,6 +831,9 @@ Osp.Core.Mixin.define("borrowNone.Events",
 
 				if(Osp.Core.Check.isPositiveNumber(date))
 				{
+					console.log(new Date(date).toLocaleDateString());
+					console.log(new Date(date).toDateString());
+
 					date = new Date(date).toLocaleDateString();
 				}
 				else
@@ -804,9 +860,10 @@ Osp.Core.Mixin.define("borrowNone.Events",
 				this.detailStartDateLabelValue.setText(date);
 				this.detailEndDateLabelValue.setText(endDate);
 				this.detailNoteLabelValue.setText(itemData.note);
-				this.detailIdLabelValue.setText(index);
-				this.detailEventIdLabelValue.setText(eventId);
+				this.detailIdLabelValue.setText(index+'');
+				this.detailEventIdLabelValue.setText(eventId+'');
 				this.detailTitleLabelValue.setText(itemData.title);
+				this.detailStatusLabelValue.setText(itemData.type+'');
 
 				// modify header
 				this.BackButtonHeader();
@@ -818,8 +875,13 @@ Osp.Core.Mixin.define("borrowNone.Events",
 				// show detail page and hide all other pages
 				this.hideAllPages();
 				this.showPage(this.detailPanel);
+
+				this.CURRENT.ITEM = itemData;
+				this.CURRENT.ID = index;
 			}
-			else
+
+			// CONTACTLIST
+			if(this.contactList.isVisible())
 			{
 				var contactItem = item.setting.elements;
 
@@ -841,7 +903,7 @@ Osp.Core.Mixin.define("borrowNone.Events",
 
 					this.personField.setText(contactItem[0].text);
 
-					if(this.checkEmptyFields([this.titleField, this.personField, this.atartDateField]))
+					if(this.checkEmptyFields([this.titleField, this.personField, this.startDateField]))
 					{
 						this.footerObj.setItemEnabled(0, true);
 					}

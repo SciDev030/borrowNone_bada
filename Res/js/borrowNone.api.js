@@ -46,7 +46,7 @@ Osp.Core.Mixin.define("borrowNone.API",
 		 * @param {Object} exportdata
 		 * @param {Number} index
 		 */
-		updateEvent: function(data, exportdata, index)
+		updateEvent: function(data, index)
 		{
 			var cal,
 				self = this,
@@ -121,7 +121,7 @@ Osp.Core.Mixin.define("borrowNone.API",
 					events[0].summary = type+data.title;
 					events[0].startTime = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
-					if(exportdata)
+					if(data.exportdata)
 					{
 						events[0].alarmTrigger = -exportdata.time;
 						events[0].alarmType = exportdata.modus;
@@ -142,7 +142,7 @@ Osp.Core.Mixin.define("borrowNone.API",
 		 * @param {Object} exportdata
 		 * @param {Number} index
 		 */
-		export2Calendar: function(data, exportdata, index)
+		export2Calendar: function(data, index)
 		{
 			var self = this,
 				calenderAPI = deviceapis.pim.calendar;
@@ -202,7 +202,7 @@ Osp.Core.Mixin.define("borrowNone.API",
 				event.description = status+"\n"+data.note;
 				event.startTime = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
-				if(exportdata)
+				if(data.exportdata)
 				{
 					event.alarmTrigger = -exportdata.time; // negative integer as before the date mark
 					event.alarmType = exportdata.modus;

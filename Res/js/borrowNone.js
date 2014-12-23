@@ -1,6 +1,7 @@
 Osp.Core.Class.define("borrowNone",
 {
 	//TODO: Datenstruktur anpassen (waiting for test)
+	//TODO: EditView muss auch exportData berücksichtigen
 	//TODO: GitHub repo aufsetzen (after release)
 	extend: Osp.Core.Object,
 	include: [borrowNone.API, borrowNone.DB, borrowNone.Events,  borrowNone.Ui, borrowNone.Util, borrowNone.Style],
@@ -27,7 +28,10 @@ Osp.Core.Class.define("borrowNone",
 					{"title": "Test item2", "type": "loan", "person": "Jacob", "date": "2014-14-12", "endDate": "2014-17-12", "pic": "", "note": "", "eventId": null},
 					{"title": "Test item3", "type": 1, "person": "Jacob", "date": "2014-14-12", "endDate": "", "pic": "", "note": "", "eventId": -1},
 					{"title": "Test item4", "type": 1, "person": "Jacob", "date": 1419090276000, "endDate": -1, "pic": "", "note": "", "eventId": -1},
-					{"title": "Test item5", "type": 2, "person": "Jacob", "date": 1419090276000, "endDate": -1, "pic": "", "note": "", "eventId": -1}
+					{"title": "Test item5", "type": 2, "person": "Jacob", "date": 1419090276000, "endDate": 1419090276000, "pic": "", "note": "", "eventId": 2, "exportData":{"time":120,modus:1}},
+					{"title": "Test item6", "type": 2, "person": "Jacob", "date": 1419090276000, "endDate": 1419090300000, "pic": "", "note": "", "eventId": 14, "exportData":{"time":120,modus:0}},
+					{"title": "Test item7", "type": 2, "person": "Jacob", "date": 1419090276000, "endDate": 1439090300000, "pic": "", "note": "", "eventId": 25, "exportData":{"time":120,modus:2}},
+					{"title": "Test item8", "type": 1, "person": "Jacob", "date": 1419090276000, "endDate": 1439090276000, "pic": "", "note": "", "eventId": ""}
 				];
 
 				var saveItem = {};
@@ -64,7 +68,6 @@ Osp.Core.Class.define("borrowNone",
 				var data = JSON.parse(db).results,
 					dataItem = null,
 					listItem = null,
-					toItem = null,
 					boundsSetting = null;
 
 				for(var idx = 0; idx < data.length; idx++)
@@ -126,19 +129,16 @@ Osp.Core.Class.define("borrowNone",
 						textSliding: dataItem.title.length >= 22 ? true : false
 					});
 
-					if(dataItem.type === 1 || dataItem.type === 'borrow') // type can be number (>1.2) or string (<1.3) 
+					if(dataItem.type === 1 || dataItem.type === 'borrow') // type can be number (>1.2) or string (<1.2) 
 					{
 						fromList.addItem(listItem);
 					}
-					else
+
+					if(dataItem.type === 2 || dataItem.type === 'loan')
 					{
 						toList.addItem(listItem);
 					}
 				}
-			}
-			else
-			{
-				console.info("loadDB() > database empty");
 			}
 
 			fromList.updateList();

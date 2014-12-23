@@ -67,7 +67,9 @@ Osp.Core.Mixin.define("borrowNone.Ui",
 		{
 			var allowExport = localStorage.getItem('allowExport');
 
-			// "FROM"-List
+			/**
+			 * FROMPAGE
+			 */
 			this.borrowList = new Osp.Ui.Controls.List({
 				bounds: {x: 0, y: 0, width: 480, height: this.CONST.BODYHEIGHT},
 				itemDivider : true,
@@ -81,7 +83,10 @@ Osp.Core.Mixin.define("borrowNone.Ui",
 
 			this.mainForm.addControl(this.borrowList);
 
-			// "TO"-LIST
+
+			/**
+			 * TOPAGE
+			 */
 			this.loanList = new Osp.Ui.Controls.List({
 				bounds: {x: 0, y: 0, width: 480, height: this.CONST.BODYHEIGHT},
 				itemDivider : true,
@@ -96,7 +101,9 @@ Osp.Core.Mixin.define("borrowNone.Ui",
 			this.mainForm.addControl(this.loanList);
 
 
-			// ADDPAGE //
+			/**
+			 * ADDPAGE
+			 */
 			this.addPanel = new Osp.Ui.Controls.ScrollPanel({
 				bounds: {x: 0, y: 0, width: 480, height: this.CONST.BODYHEIGHT}
 			});
@@ -338,24 +345,9 @@ Osp.Core.Mixin.define("borrowNone.Ui",
 			this.addPanel.addControl(this.typeMode3CheckButton);
 
 
-			// CONTACTLIST //
-			this.contactList = new Osp.Ui.Controls.List({
-				bounds: {x: 0, y: 0, width: 480, height: this.getBodyHeight(this.mainForm, false)},
-				itemDivider : true,
-				fastScroll : false
-			});
-			this.contactList.setBackgroundColor('#000000');
-			this.contactList.setImageOfEmptyList('images/00_icon_empty.png' , {width : 256, height:256});
-
-			this.contactList.updateList();
-
-			this.contactList.addListener('listItemStateChange', this.onListAction, this);
-			this.contactList.addListener('fastScrollIndexSelect', this.onFastScrollIndexAction, this);
-
-			this.mainForm.addControl(this.contactList);
-
-
-			// SETTINGSPAGE //
+			/**
+			 * SETTINGSPAGE
+			 */
 			this.settingsPanel = new Osp.Ui.Controls.Panel({
 				bounds: {x: 0, y: 0, width: 480, height: this.getBodyHeight(this.mainForm, false)},
 				groupStyle: 'none'
@@ -407,7 +399,9 @@ Osp.Core.Mixin.define("borrowNone.Ui",
 			this.settingsPanel.addControl(this.importButton);
 
 
-			// DETAILPAGE //
+			/**
+			 * DETAILPAGE
+			 */
 			this.detailPanel = new Osp.Ui.Controls.ScrollPanel({
 				bounds: {x: 0, y: 0, width: 480, height: this.CONST.BODYHEIGHT}
 			});
@@ -435,6 +429,13 @@ Osp.Core.Mixin.define("borrowNone.Ui",
 				multiLine: false
 			});
 			this.detailTitleLabelValue.setVisible(false);
+			// DETAIL_STATUS
+			this.detailStatusLabelValue = new Osp.Ui.Controls.Label({
+				bounds: {x: 0, y: 0, width: 0, height: 0},
+				text:'',
+				multiLine: false
+			});
+			this.detailStatusLabelValue.setVisible(false);
 
 			// DETAIL_PIC
 			this.detailPicLabelValue = new Osp.Ui.Controls.Label({
@@ -509,6 +510,7 @@ Osp.Core.Mixin.define("borrowNone.Ui",
 			this.detailPanel.addControl(this.detailIdLabelValue);
 			this.detailPanel.addControl(this.detailEventIdLabelValue);
 			this.detailPanel.addControl(this.detailTitleLabelValue);
+			this.detailPanel.addControl(this.detailStatusLabelValue);
 			this.detailPanel.addControl(this.detailPicLabelValue);
 			this.detailPanel.addControl(this.detailTypeLabel);
 			this.detailPanel.addControl(this.detailTypeLabelValue);
@@ -521,7 +523,9 @@ Osp.Core.Mixin.define("borrowNone.Ui",
 			this.detailPanel.addControl(this.detailNoteLabelValue);
 
 
-			// EDITPAGE //
+			/**
+			 * EDITPAGE
+			 */
 			this.editPanel = new Osp.Ui.Controls.ScrollPanel({
 				bounds: {x: 0, y: 0, width: 480, height: this.CONST.BODYHEIGHT}
 			});
@@ -727,7 +731,6 @@ Osp.Core.Mixin.define("borrowNone.Ui",
 				this.editTypeMode3CheckButton.setVisible(true);
 			}
 
-
 			this.editStartDateField.addListener('textValueChange', this.onContextChange, this);
 			this.editEndDateField.addListener('textValueChange', this.onContextChange, this);
 			this.editPersonButton.addListener('actionPerform', this.onButtonAction, this);
@@ -757,6 +760,29 @@ Osp.Core.Mixin.define("borrowNone.Ui",
 			this.editPanel.addControl(this.editTypeMode2CheckButton);
 			this.editPanel.addControl(this.editTypeMode3CheckButton);
 
+			
+			/**
+			 * CONTACTLIST
+			 */
+			this.contactList = new Osp.Ui.Controls.List({
+				bounds: {x: 0, y: 0, width: 480, height: this.getBodyHeight(this.mainForm, false)},
+				itemDivider : true,
+				fastScroll : false
+			});
+			this.contactList.setBackgroundColor('#000000');
+			this.contactList.setImageOfEmptyList('images/00_icon_empty.png' , {width : 256, height:256});
+
+			this.contactList.updateList();
+
+			this.contactList.addListener('listItemStateChange', this.onListAction, this);
+			this.contactList.addListener('fastScrollIndexSelect', this.onFastScrollIndexAction, this);
+
+			this.mainForm.addControl(this.contactList);
+
+
+			/**
+			 * SHOW BORROWLIST
+			 */
 			this.hideAllPages();
 			this.showPage(this.borrowList);
 		},
@@ -1119,7 +1145,7 @@ Osp.Core.Mixin.define("borrowNone.Ui",
 
 			messageBoxObj.showAndWait();
 
-			messageBoxObj.addListener('actionPerform', this.onMessageBoxAction, this)
+			messageBoxObj.addListener('actionPerform', this.onMessageBoxAction, this);
 		},
 
 		/**
@@ -1128,27 +1154,25 @@ Osp.Core.Mixin.define("borrowNone.Ui",
 		 * @param {String} _modus
 		 * @since 1.3.0
 		 * @author Marco Büttner
+		 * @returns {void}
 		 */
 		updateList: function(_list, _modus) {
-			var itemsCount = _list.getItemCount(); 
+			var itemsCount = _list.getItemCount(),
+				item = null;
 
 			for(var i = itemsCount - 1; i >= 0; i--)
 			{
 				item = _list.getItemAt(i);
+
+				if(item.setting.annex === 'mark' && _list.isItemChecked(i))
+				{
+					_list.setItemChecked(i, false);
+				}
+
 				item.setting.annex = _modus;
 			}
-			_list.updateList(); // update the whole list without errors
 
-			if(_modus === 'mark')
-			{
-				for(var i = itemsCount - 1; i >= 0; i--)
-				{
-					if(_list.isItemChecked(i))
-					{
-						_list.setItemChecked(i, false);
-					}
-				}
-			}
+			_list.updateList(); // update the whole list without errors
 		},
 
 		/**
